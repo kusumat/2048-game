@@ -281,3 +281,19 @@ footer {
         touch-action: none;
     }
 }
+
+#restart-btn, #undo-btn {
+    margin-left: 10px;
+}
+
+#undo-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
