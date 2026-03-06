@@ -11,6 +11,8 @@ class Game2048 {
         this.messageTitle = document.getElementById('message-title');
         this.messageText = document.getElementById('message-text');
         
+        this.moveHistory = [];
+        this.maxHistorySize = 10;
         this.init();
         this.bindEvents();
     }
@@ -80,6 +82,14 @@ class Game2048 {
             this.hideMessage();
         });
         
+        
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            this.restart();
+        });
+        
+        document.getElementById('undo-btn').addEventListener('click', () => {
+            this.undo();
+        });
         document.getElementById('retry-btn').addEventListener('click', () => {
             this.init();
             this.hideMessage();
@@ -106,6 +116,7 @@ class Game2048 {
         }
         
         if (moved) {
+            this.saveState();
             this.addNewTile();
             this.updateDisplay();
             
@@ -364,4 +375,34 @@ class Game2048 {
 // Initialize game when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new Game2048();
+
+    
+    saveState() {
+        const state = {
+            grid: this.grid.map(row => [...row]),
+            score: this.score
+        };
+        this.moveHistory.push(state);
+        if (this.moveHistory.length > this.maxHistorySize) {
+            this.moveHistory.shift();
+        }
+    }
+    
+    undo() {
+        if (this.moveHistory.length === 0) {
+            logger.info('No moves to undo');
+            return;
+        }
+        
+        const previousState = this.moveHistory.pop();
+        this.grid = previousState.grid;
+        this.score = previousState.score;
+        this.updateDisplay();
+        this.updateScore();
+    }
+    
+    restart() {
+        this.init();
+        this.hideMessage();
+    }
 });
